@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: smartcity_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: smartcity
+      POSTGRES_PASSWORD: smartcity_secure_pass_2026
+      POSTGRES_DB: smartcity_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartcity_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartcity -d smartcity_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartcity_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://smartcity:smartcity_secure_pass_2026@db:5432/smartcity_db
+      - PORT=8000
+    ports:
+      - "8000:8000"
+
+volumes:
+  smartcity_pgdata:
+    name: smartcity_pgdata

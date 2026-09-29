@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: smartcity-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smartcity-db
+          property: connectionString
+
+databases:
+  - name: smartcity-db
+    databaseName: smartcity_db
+    user: smartcity
+    plan: free

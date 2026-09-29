@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Management Simulator — Database Tables</title>
+    <style>
+        :root {
+            --bg: #0b111e;
+            --card-bg: #131c2e;
+            --border: #20314d;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); padding: 32px 24px; min-height: 100vh; }
+        .container { max-width: 1300px; margin: 0 auto; }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .header-title h1 { font-size: 26px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .header-title p { color: var(--text-muted); font-size: 14px; margin-top: 5px; }
+        .badge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 600; }
+        .btn { background: var(--accent); color: white; border: none; padding: 9px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.15s; }
+        .btn:hover { background: #2563eb; }
+        
+        /* Overview Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+        .stat-label { color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #fff; margin-top: 6px; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab-btn.active { color: #60a5fa; border-bottom-color: #60a5fa; }
+        .tab-btn:hover:not(.active) { color: #cbd5e1; }
+        
+        /* Table Card */
+        .table-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 24px; display: none; }
+        .table-card.active { display: block; }
+        .table-header { padding: 16px 20px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .table-header h2 { font-size: 17px; font-weight: 600; color: #e2e8f0; }
+        .table-wrapper { overflow-x: auto; max-height: 520px; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+        th { background: #0e1626; color: #94a3b8; font-weight: 600; padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: #cbd5e1; vertical-align: middle; }
+        tr:hover td { background: rgba(59, 130, 246, 0.05); }
+        .empty { text-align: center; color: var(--text-muted); padding: 40px; font-size: 15px; }
+        .code-cell { font-family: monospace; font-size: 11px; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #a5b4fc; }
+        .score-pill { background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-weight: 600; display: inline-block; }
+        
+        /* Footer */
+        .footer { text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>🏙️ Smart City Management Simulator</h1>
+                <p>Database Inspector & Supervisor Presentation Report &nbsp;|&nbsp; <code>smartcity.db</code> (SQLite 3)</p>
+            </div>
+            <div>
+                <button class="btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Tables</div>
+                <div class="stat-value">3</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Save Slots Registered</div>
+                <div class="stat-value">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Cities Configured</div>
+                <div class="stat-value">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Telemetry Snapshots</div>
+                <div class="stat-value">3</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('cities')">cities <span class="badge" style="margin-left:6px;">1</span></button>
+            <button class="tab-btn " onclick="switchTab('city_saves')">city_saves <span class="badge" style="margin-left:6px;">1</span></button>
+            <button class="tab-btn " onclick="switchTab('city_telemetry')">city_telemetry <span class="badge" style="margin-left:6px;">3</span></button>
+        </div>
+
+        <div id="card-cities" class="table-card active">
+            <div class="table-header">
+                <h2>Table: <code>cities</code></h2>
+                <span class="badge">1 records</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>city_name</th>
+                            <th>difficulty</th>
+                            <th>starting_budget</th>
+                            <th>current_budget</th>
+                            <th>population</th>
+                            <th>happiness</th>
+                            <th>sustainability</th>
+                            <th>smart_city_score</th>
+                            <th>created_at</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Green Valley</td>
+                            <td>Easy</td>
+                            <td>$150,000.00</td>
+                            <td>$150,000.00</td>
+                            <td>120</td>
+                            <td>55.0</td>
+                            <td>30.0</td>
+                            <td><span class="score-pill">50.5</span></td>
+                            <td>2026-09-12 04:14:42</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="card-city_saves" class="table-card ">
+            <div class="table-header">
+                <h2>Table: <code>city_saves</code></h2>
+                <span class="badge">1 records</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>slot_index</th>
+                            <th>city_name</th>
+                            <th>difficulty</th>
+                            <th>day</th>
+                            <th>year</th>
+                            <th>budget</th>
+                            <th>population</th>
+                            <th>happiness</th>
+                            <th>sustainability</th>
+                            <th>smart_city_score</th>
+                            <th>level</th>
+                            <th>progression_title</th>
+                            <th>state_json</th>
+                            <th>created_at</th>
+                            <th>updated_at</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>Green Valley</td>
+                            <td>Easy</td>
+                            <td>1</td>
+                            <td>2026</td>
+                            <td>$150,000.00</td>
+                            <td>120</td>
+                            <td>55.0</td>
+                            <td>30.0</td>
+                            <td><span class="score-pill">50.5</span></td>
+                            <td>1</td>
+                            <td>Small Town</td>
+                            <td><div class="code-cell" title="{"cityId":0,"cityName":"Green Valley","difficulty":"Easy","day":1,"year":2026,"budget":150000.0,"population":120,"happiness":55.0,"sustainability":30.0,"trafficEfficiency":60.0,"pollution":15.0,"airQuality":85.0,"greenCoverage":10.0,"residentialTax":10.0,"commercialTax":10.0,"industrialTax":10.0,"dailyIncome":0.0,"dailyExpenses":0.0,"maintenanceCost":0.0,"utilityExpenses":0.0,"serviceExpenses":0.0,"electricityProduction":1800.0,"electricityConsumption":458.0,"waterSupply":1800.0,"waterConsumption":388.0,"reservoirLevel":60.0,"wasteGenerated":2.200000047683716,"recyclingRate":20.0,"crimeRate":28.0,"healthcareQuality":42.0,"educationQuality":40.0,"employmentRate":55.0,"roadCondition":90.0,"smartCityScore":50.5,"level":1,"progressionTitle":"Small Town","houses":2,"commercialBuildings":0,"industrialBuildings":0,"hospitals":0,"schools":0,"policeStations":0,"fireStations":0,"parks":1,"buses":0,"busRoutes":0,"powerPlants":1,"waterFacilities":1,"recyclingCenters":0,"roads":3,"bridges":1,"fountains":0,"flowerbeds":0,"monuments":0,"benches":0,"sculptures":0,"renewableEnergyUnlocked":false,"smartTrafficUnlocked":false,"advancedTransitUnlocked":false,"smartGridUnlocked":false,"overlayMode":"None","currentEvent":{"id":"","title":"","description":"","optionA":"","costA":0.0,"optionB":"","costB":0.0,"optionC":"","costC":0.0},"populationHistory":[120.0],"budgetHistory":[150000.0],"happinessHistory":[55.0],"trafficHistory":[60.0],"sustainabilityHistory":[30.0]}">{"cityId":0,"cityName":"Green Valley","difficulty":"Easy","day":1,"year":2026,"budget":150000.0,"population":120,"happiness":55.0,"sustainability":30.0,"trafficEfficiency":60.0,"pollution":15.0,"airQuality":85.0,"greenCoverage":10.0,"residentialTax":10.0,"commercialTax":10.0,"industrialTax":10.0,"dailyIncome":0.0,"dailyExpenses":0.0,"maintenanceCost":0.0,"utilityExpenses":0.0,"serviceExpenses":0.0,"electricityProduction":1800.0,"electricityConsumption":458.0,"waterSupply":1800.0,"waterConsumption":388.0,"reservoirLevel":60.0,"wasteGenerated":2.200000047683716,"recyclingRate":20.0,"crimeRate":28.0,"healthcareQuality":42.0,"educationQuality":40.0,"employmentRate":55.0,"roadCondition":90.0,"smartCityScore":50.5,"level":1,"progressionTitle":"Small Town","houses":2,"commercialBuildings":0,"industrialBuildings":0,"hospitals":0,"schools":0,"policeStations":0,"fireStations":0,"parks":1,"buses":0,"busRoutes":0,"powerPlants":1,"waterFacilities":1,"recyclingCenters":0,"roads":3,"bridges":1,"fountains":0,"flowerbeds":0,"monuments":0,"benches":0,"sculptures":0,"renewableEnergyUnlocked":false,"smartTrafficUnlocked":false,"advancedTransitUnlocked":false,"smartGridUnlocked":false,"overlayMode":"None","currentEvent":{"id":"","title":"","description":"","optionA":"","costA":0.0,"optionB":"","costB":0.0,"optionC":"","costC":0.0},"populationHistory":[120.0],"budgetHistory":[150000.0],"happinessHistory":[55.0],"trafficHistory":[60.0],"sustainabilityHistory":[30.0]}</div></td>
+                            <td>2026-09-12 04:10:17</td>
+                            <td>2026-09-12 04:10:17</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="card-city_telemetry" class="table-card ">
+            <div class="table-header">
+                <h2>Table: <code>city_telemetry</code></h2>
+                <span class="badge">3 records</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>city_save_id</th>
+                            <th>slot_index</th>
+                            <th>in_game_day</th>
+                            <th>in_game_year</th>
+                            <th>budget</th>
+                            <th>population</th>
+                            <th>happiness</th>
+                            <th>sustainability</th>
+                            <th>traffic_efficiency</th>
+                            <th>pollution</th>
+                            <th>crime_rate</th>
+                            <th>power_balance</th>
+                            <th>water_balance</th>
+                            <th>timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>2026</td>
+                            <td>$149,550.00</td>
+                            <td>138</td>
+                            <td>56.2</td>
+                            <td>30.8</td>
+                            <td>65.0</td>
+                            <td>15.0</td>
+                            <td>22.0</td>
+                            <td>10.0</td>
+                            <td>8.0</td>
+                            <td>2026-09-12 04:14:30</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>2</td>
+                            <td>2026</td>
+                            <td>$149,100.00</td>
+                            <td>156</td>
+                            <td>57.4</td>
+                            <td>31.6</td>
+                            <td>65.0</td>
+                            <td>15.0</td>
+                            <td>22.0</td>
+                            <td>10.0</td>
+                            <td>8.0</td>
+                            <td>2026-09-12 04:14:30</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>3</td>
+                            <td>2026</td>
+                            <td>$148,650.00</td>
+                            <td>174</td>
+                            <td>58.6</td>
+                            <td>32.4</td>
+                            <td>65.0</td>
+                            <td>15.0</td>
+                            <td>22.0</td>
+                            <td>10.0</td>
+                            <td>8.0</td>
+                            <td>2026-09-12 04:14:30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            Smart City Management Simulator &bull; Backend Architecture: FastAPI + PostgreSQL / SQLite3 &bull; Generated for Supervisor Review
+        </div>
+    </div>
+
+    <script>
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(name));
+            });
+            document.querySelectorAll('.table-card').forEach(card => {
+                card.classList.toggle('active', card.id === 'card-' + name);
+            });
+        }
+    </script>
+</body>
+</html>
