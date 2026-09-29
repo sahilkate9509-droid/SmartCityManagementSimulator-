@@ -76,3 +76,13 @@ wheels/
 [Dd]esktop.ini
 Thumbs.db
 .DS_Store
+
+# =========================================================================
+# Local Documentation & Black Book Backup (excluded from game repository)
+# =========================================================================
+_BlackBook_Documentation_Backup/
+*.pdf
+Presentation_Defense_Guide.md
+Smart_City_Management_Simulator_Test_Cases.*
+docs_figures/
+
